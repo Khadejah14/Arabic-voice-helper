@@ -42,7 +42,7 @@ This project uses:
     python-dotenv
     openai
     ```
-2.  Connect your repository to Render.
+2.  Connect your repository to Render
 3.  Select "Web Service".
 4.  Set Build Command: `pip install -r requirements.txt`
 5.  Set Start Command: `uvicorn backend:app --host 0.0.0.0 --port $PORT`
