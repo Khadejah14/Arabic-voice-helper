@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ناطق عربي - Whisper Edition</title>
+    <title>Arabic Pronunciation Trainer</title>
     <link href="https://fonts.googleapis.com/css2?family=Traditional+Arabic&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,9 +15,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f3443 0%, #34e89e 25%, #f7971e 50%, #ffd200 75%, #0f3443 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #2b6cb0 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,110 +23,77 @@
             padding: 20px;
         }
 
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
             padding: 40px;
-            max-width: 900px;
+            max-width: 850px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
         }
 
         h1 {
             text-align: center;
-            font-size: 2.5em;
-            background: linear-gradient(135deg, #0f3443, #34e89e, #f7971e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .arabic-title {
-            font-family: 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
-            font-size: 1.2em;
-            color: #0f3443;
-            text-align: center;
+            font-size: 2em;
+            color: #1a365d;
             margin-bottom: 5px;
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+            color: #4a5568;
+            margin-bottom: 25px;
+            font-size: 1em;
+        }
+
+        .instructions {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .instructions h3 {
+            color: #2b6cb0;
+            margin-bottom: 12px;
             font-size: 1.1em;
-            position: relative;
-            z-index: 1;
+        }
+
+        .instructions ol {
+            text-align: left;
+            margin-left: 25px;
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
         }
 
         .model-status {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            padding: 15px;
-            border-radius: 15px;
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            padding: 12px;
+            border-radius: 12px;
             margin-bottom: 20px;
             text-align: center;
-            position: relative;
-            z-index: 1;
-            border: 2px solid #2196f3;
+            color: #276749;
+            font-weight: 500;
         }
 
         .model-status.loading {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            border-color: #ff9800;
-        }
-
-        .model-status.ready {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-color: #4caf50;
+            background: #fffaf0;
+            border-color: #f6ad55;
+            color: #c05621;
         }
 
         .progress-bar {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            border-radius: 3px;
             margin-top: 10px;
             overflow: hidden;
             display: none;
@@ -140,66 +105,67 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #2196f3, #21cbf3);
+            background: linear-gradient(90deg, #4299e1, #63b3ed);
             width: 0%;
             transition: width 0.3s;
         }
 
         .input-section {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
             padding: 25px;
-            border-radius: 20px;
+            border-radius: 16px;
             margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
         }
 
         .input-wrapper {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            flex-direction: row-reverse;
         }
 
         #arabicInput {
             flex: 1;
             min-width: 200px;
-            padding: 15px 20px;
-            border: 3px solid #fff;
-            border-radius: 15px;
-            font-size: 1.5em;
-            background: rgba(255, 255, 255, 0.9);
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.4em;
+            background: white;
             outline: none;
             transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             font-family: 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
             direction: rtl;
         }
 
         #arabicInput:focus {
-            border-color: #f7971e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(247, 151, 30, 0.3);
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
         }
 
         .btn {
-            padding: 15px 25px;
+            padding: 14px 22px;
             border: none;
-            border-radius: 15px;
-            font-size: 1.1em;
+            border-radius: 12px;
+            font-size: 1em;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: bold;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .btn:disabled {
@@ -208,75 +174,73 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #0f3443, #34e89e);
+            background: linear-gradient(135deg, #3182ce, #4299e1);
             color: white;
         }
 
         .btn-play {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
+            background: linear-gradient(135deg, #38a169, #48bb78);
             color: white;
         }
 
         .btn-record {
-            background: linear-gradient(135deg, #fc4a1a, #f7b733);
+            background: linear-gradient(135deg, #3182ce, #4299e1);
             color: white;
-            font-size: 1.3em;
-            padding: 20px 40px;
+            font-size: 1.1em;
+            padding: 18px 36px;
             border-radius: 50px;
             margin: 0 auto;
             display: flex;
         }
 
         .btn-record.recording {
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #e53e3e, #fc8181);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
         }
 
         .display-section {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            padding: 25px;
-            border-radius: 20px;
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            padding: 30px;
+            border-radius: 16px;
             margin-bottom: 25px;
             text-align: center;
-            position: relative;
-            z-index: 1;
-            min-height: 120px;
+            min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.4);
+            align-items: center;
+        }
+
+        .display-header {
+            font-size: 0.85em;
+            color: #718096;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .arabic-text {
-            font-size: 3em;
-            color: #0f3443;
-            margin-bottom: 10px;
+            font-size: 2.8em;
+            color: #1a365d;
+            margin-bottom: 8px;
             font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             font-family: 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
             direction: rtl;
         }
 
         .transliteration-text {
-            font-size: 1.2em;
-            color: #f7971e;
+            font-size: 1.1em;
+            color: #4a5568;
             font-family: 'Courier New', monospace;
             letter-spacing: 1px;
             opacity: 0;
             transition: opacity 0.5s;
-            direction: ltr;
         }
 
         .transliteration-text.show {
@@ -286,42 +250,46 @@
         .toggle-transliteration {
             position: absolute;
             top: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            padding: 8px 15px;
+            right: 10px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9em;
-            color: #0f3443;
+            font-size: 0.85em;
+            color: #4a5568;
             transition: all 0.3s;
         }
 
         .toggle-transliteration:hover {
-            background: white;
-            transform: scale(1.05);
+            background: #edf2f7;
+            transform: scale(1.02);
         }
 
         .recording-section {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 16px;
             text-align: center;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
+        }
+
+        .recording-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
         .visualizer {
-            height: 60px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            margin: 20px 0;
+            gap: 3px;
+            margin: 15px 0;
             opacity: 0;
             transition: opacity 0.3s;
-            direction: ltr;
         }
 
         .visualizer.active {
@@ -329,8 +297,8 @@
         }
 
         .bar {
-            width: 6px;
-            background: linear-gradient(to top, #0f3443, #34e89e);
+            width: 5px;
+            background: linear-gradient(to top, #3182ce, #63b3ed);
             border-radius: 3px;
             transition: height 0.1s;
         }
@@ -338,129 +306,98 @@
         .result-section {
             margin-top: 25px;
             padding: 25px;
-            border-radius: 20px;
+            border-radius: 16px;
             text-align: center;
-            position: relative;
-            z-index: 1;
             display: none;
             animation: slideIn 0.5s ease;
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .result-section.success {
-            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
-            display: block;
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
         }
 
         .result-section.partial {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            display: block;
+            background: linear-gradient(135deg, #feebc8, #fbd38d);
         }
 
         .result-section.fail {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            display: block;
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
         }
 
         .score-circle {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
-            margin: 0 auto 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
+            margin: 0 auto 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .score-circle::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 50%;
-            border: 4px solid transparent;
-            border-top-color: currentColor;
-            animation: spin 2s linear infinite;
+        .result-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        .result-message {
+            margin-bottom: 10px;
+            color: #4a5568;
         }
 
         .recognized-text {
-            font-size: 1.2em;
-            color: #0f3443;
-            margin-top: 10px;
+            font-size: 1em;
+            color: #2d3748;
             padding: 10px;
             background: rgba(255, 255, 255, 0.5);
-            border-radius: 10px;
+            border-radius: 8px;
             direction: rtl;
             font-family: 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
         }
 
         .emoji-reaction {
-            font-size: 3em;
-            margin: 10px 0;
+            font-size: 2.5em;
+            margin-bottom: 10px;
             animation: bounce 0.5s;
         }
 
         @keyframes bounce {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.3);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         .preset-sentences {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             margin-top: 15px;
             justify-content: center;
-            direction: rtl;
         }
 
         .preset-btn {
-            background: rgba(255, 255, 255, 0.6);
-            border: 2px solid #0f3443;
-            color: #0f3443;
-            padding: 8px 15px;
+            background: white;
+            border: 1px solid #cbd5e0;
+            color: #4a5568;
+            padding: 8px 14px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
             transition: all 0.3s;
-            font-family: 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
         }
 
         .preset-btn:hover:not(:disabled) {
-            background: #0f3443;
+            background: #4299e1;
             color: white;
+            border-color: #4299e1;
             transform: translateY(-2px);
         }
 
@@ -472,114 +409,74 @@
         .status-indicator {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 5px 15px;
-            background: rgba(255, 255, 255, 0.8);
+            gap: 6px;
+            padding: 6px 14px;
+            background: white;
             border-radius: 20px;
             font-size: 0.9em;
-            color: #666;
-            margin-top: 10px;
+            color: #4a5568;
+            margin-top: 12px;
+            border: 1px solid #e2e8f0;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #38ef7d;
-            animation: blink 2s infinite;
+            background: #48bb78;
         }
 
         .status-dot.recording {
-            background: #ff416c;
+            background: #e53e3e;
             animation: blink 0.5s infinite;
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         .confetti {
             position: fixed;
             width: 10px;
             height: 10px;
-            background: #f0f;
-            position: absolute;
-            animation: confetti-fall 3s linear forwards;
             z-index: 1000;
+            animation: confetti-fall 3s linear forwards;
         }
 
         @keyframes confetti-fall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+            to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        .whisper-info {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 10px;
-            font-size: 0.85em;
-            color: #555;
-        }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .arabic-text {
-                font-size: 2em;
-            }
-
-            .container {
-                padding: 25px;
-            }
-        }
-    </style>
-
-    <style>
         /* Tab Styles */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 25px;
-            position: relative;
-            z-index: 2;
         }
 
         .tab-btn {
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px solid #fff;
-            padding: 10px 25px;
-            border-radius: 20px;
+            background: #edf2f7;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #0f3443;
+            font-size: 1em;
+            font-weight: 600;
+            color: #4a5568;
             transition: all 0.3s;
         }
 
         .tab-btn.active {
-            background: #fff;
-            color: #f7971e;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.5s;
+            animation: fadeIn 0.4s;
         }
 
         .tab-content.active {
@@ -587,80 +484,68 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Voice Chat Styles */
         .chat-container {
-            height: 400px;
+            height: 350px;
             overflow-y: auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 20px;
+            background: #f7fafc;
+            border-radius: 16px;
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
         }
 
         .chat-message {
             max-width: 80%;
-            padding: 15px;
-            border-radius: 15px;
-            line-height: 1.4;
-            position: relative;
+            padding: 14px;
+            border-radius: 16px;
+            line-height: 1.5;
             animation: slideUp 0.3s ease;
         }
 
         @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .chat-message.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, #0f3443, #34e89e);
+            background: linear-gradient(135deg, #3182ce, #4299e1);
             color: white;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 4px;
         }
 
         .chat-message.ai {
             align-self: flex-start;
             background: white;
-            color: #0f3443;
-            border-bottom-left-radius: 2px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #2d3748;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .chat-controls {
             display: flex;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .voice-chat-btn {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #fc4a1a, #f7b733);
+            background: linear-gradient(135deg, #3182ce, #4299e1);
             border: none;
             color: white;
-            font-size: 2em;
+            font-size: 1.8em;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(252, 74, 26, 0.4);
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.4);
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -668,78 +553,89 @@
         }
 
         .voice-chat-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.08);
         }
 
         .voice-chat-btn.recording {
             animation: pulse 1.5s infinite;
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #e53e3e, #fc8181);
         }
 
         .voice-chat-btn.processing {
-            background: #999;
+            background: #a0aec0;
             cursor: wait;
-            animation: spin-slow 2s linear infinite;
         }
 
-        @keyframes spin-slow {
-            to {
-                transform: rotate(360deg);
-            }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6em; }
+            .arabic-text { font-size: 1.8em; }
+            .container { padding: 20px; }
+            .instructions ol { margin-left: 20px; }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="arabic-title">ناطق عربي</div>
-        <h1>🎯 Natiq Arabi</h1>
-        <p class="subtitle">Powered by ElevenLabs Scribe (Server-Side)</p>
+        <h1>Arabic Pronunciation Trainer</h1>
+        <p class="subtitle">Practice speaking Arabic with instant feedback</p>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>How to Use</h3>
+            <ol>
+                <li>Enter an Arabic sentence or choose a preset below</li>
+                <li>Click <strong>"Hear It"</strong> to hear the correct pronunciation</li>
+                <li>Click <strong>"Start Recording"</strong> and speak the Arabic sentence</li>
+                <li>Get instant feedback on your pronunciation accuracy</li>
+                <li>Or click <strong>"Voice Chat"</strong> to practice conversational Arabic and get feedback from an AI teacher</li>
+            </ol>
+        </div>
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('pronunciation')">نطق (Pronunciation)</button>
-            <button class="tab-btn" onclick="switchTab('voice-chat')">دردشة صوتية (Voice Chat)</button>
+            <button class="tab-btn active" onclick="switchTab('pronunciation')">Practice Pronunciation</button>
+            <button class="tab-btn" onclick="switchTab('voice-chat')">Voice Chat</button>
         </div>
 
-        <!-- Pronunciation Tab Content -->
+        <!-- Pronunciation Tab -->
         <div id="pronunciation-tab" class="tab-content active">
             <div class="model-status" id="modelStatus">
-                <div>🤖 System Ready</div>
-                <div class="whisper-info">Using high-accuracy server-side recognition</div>
-                <div class="progress-bar" id="progressBar" style="display: none;">
+                <span>Loading model...</span>
+                <div class="progress-bar" id="progressBar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
 
             <div class="input-section">
+                <label class="input-label">Enter Arabic text to practice:</label>
                 <div class="input-wrapper">
-                    <input type="text" id="arabicInput" placeholder="...أدخل جملة عربية" maxlength="50" dir="rtl"
-                        disabled>
+                    <input type="text" id="arabicInput" placeholder="Type Arabic here..." maxlength="50" dir="rtl" disabled>
                     <button class="btn btn-primary" id="setBtn" onclick="setSentence()" disabled>
-                        <span>✨</span> Set
+                        Set Text
                     </button>
                 </div>
                 <div class="preset-sentences">
-                    <button class="preset-btn" onclick="quickSet('مرحبا')" disabled>مرحبا</button>
-                    <button class="preset-btn" onclick="quickSet('شكرا')" disabled>شكرا</button>
-                    <button class="preset-btn" onclick="quickSet('كيف حالك')" disabled>كيف حالك</button>
-                    <button class="preset-btn" onclick="quickSet('السلام عليكم')" disabled>السلام عليكم</button>
-                    <button class="preset-btn" onclick="quickSet('أحب اللغة العربية')" disabled>أحب اللغة
-                        العربية</button>
+                    <button class="preset-btn" onclick="quickSet('مرحبا')" disabled>Hello</button>
+                    <button class="preset-btn" onclick="quickSet('شكرا')" disabled>Thank you</button>
+                    <button class="preset-btn" onclick="quickSet('كيف حالك')" disabled>How are you?</button>
+                    <button class="preset-btn" onclick="quickSet('السلام عليكم')" disabled>Peace be upon you</button>
+                    <button class="preset-btn" onclick="quickSet('أحب اللغة العربية')" disabled>I love Arabic</button>
                 </div>
             </div>
 
-            <div class="display-section">
-                <button class="toggle-transliteration" onclick="toggleTransliteration()">👀 Transliteration</button>
-                <div class="arabic-text" id="displayText">مرحبا بالعالم</div>
-                <div class="transliteration-text" id="transliterationText">marhaban bial'alami</div>
+            <div class="display-section" style="position: relative;">
+                <button class="toggle-transliteration" onclick="toggleTransliteration()">Show Latin</button>
+                <div class="display-header">Say this:</div>
+                <div class="arabic-text" id="displayText">مرحبا</div>
+                <div class="transliteration-text" id="transliterationText">marhaba</div>
                 <button class="btn btn-play" id="playBtn" onclick="playReference()" style="margin-top: 15px;" disabled>
-                    <span>🔊</span> Hear It
+                    Hear It
                 </button>
             </div>
 
             <div class="recording-section">
+                <div class="recording-title">Your Turn - Record Your Pronunciation</div>
                 <div class="visualizer" id="visualizer"></div>
                 <button class="btn btn-record" id="recordBtn" onclick="toggleRecording()" disabled>
                     <span id="recordIcon">🎤</span>
@@ -747,25 +643,24 @@
                 </button>
                 <div class="status-indicator" id="statusIndicator">
                     <span class="status-dot" id="statusDot"></span>
-                    <span id="statusText">Ready to practice</span>
+                    <span id="statusText">Ready</span>
                 </div>
             </div>
 
             <div class="result-section" id="resultSection">
                 <div class="emoji-reaction" id="emojiReaction">🎉</div>
                 <div class="score-circle" id="scoreCircle">100%</div>
-                <h3 id="resultTitle">Perfect!</h3>
-                <p id="resultMessage">Your pronunciation is excellent!</p>
-                <div class="recognized-text" id="recognizedText">Recognized: "مرحبا بالعالم"</div>
+                <div class="result-title" id="resultTitle">Perfect!</div>
+                <div class="result-message" id="resultMessage">Excellent pronunciation!</div>
+                <div class="recognized-text" id="recognizedText">You said: "مرحبا"</div>
             </div>
         </div>
 
-        <!-- Voice Chat Tab Content -->
+        <!-- Voice Chat Tab -->
         <div id="voice-chat-tab" class="tab-content">
             <div class="chat-container" id="chatContainer">
                 <div class="chat-message ai">
-                    مرحباً! أنا معلم اللغة العربية الخاص بك. كيف يمكنني مساعدتك اليوم؟
-                    (Hello! I am your Arabic teacher. How can I help you today?)
+                    Hello! I'm your Arabic teacher. How can I help you practice today?
                 </div>
             </div>
 
@@ -774,17 +669,13 @@
                     🎙️
                 </button>
             </div>
-            <div style="text-align: center; color: #666; margin-top: 10px;">
+            <div style="text-align: center; color: #718096; margin-top: 12px;">
                 <span id="voiceChatStatus">Tap microphone to speak</span>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Removed import { pipeline }
-
-        // Arabic to Latin transliteration map
         const arabicToLatin = {
             'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'aa', 'ى': 'a',
             'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'h',
@@ -797,7 +688,7 @@
             'ّ': '', 'ً': 'an', 'ٍ': 'in', 'ٌ': 'un', ' ': ' '
         };
 
-        let currentSentence = 'مرحبا بالعالم';
+        let currentSentence = 'مرحبا';
         let isRecording = false;
         let isVoiceChatRecording = false;
         let audioContext = null;
@@ -809,22 +700,15 @@
         let voiceChatMediaRecorder = null;
         let voiceChatChunks = [];
 
-        // Tab Switching
         window.switchTab = function (tabName) {
-            // Update buttons
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-
-            // Update content visibility
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(tabName + '-tab').classList.add('active');
-
-            // Stop any active recordings/playback when switching
             if (isRecording) stopRecording();
             if (isVoiceChatRecording) stopVoiceChatRecording();
         };
 
-        // Initialize visualizer bars
         const visualizer = document.getElementById('visualizer');
         for (let i = 0; i < 20; i++) {
             const bar = document.createElement('div');
@@ -833,12 +717,10 @@
             visualizer.appendChild(bar);
         }
 
-        // Initialize system
         function initSystem() {
             const statusDiv = document.getElementById('modelStatus');
-            statusDiv.classList.remove('loading');
             statusDiv.classList.add('ready');
-            statusDiv.innerHTML = '<div>✅ Ready to Practice!</div><div class="whisper-info">Connected to ElevenLabs High-Accuracy Arabic Model</div>';
+            statusDiv.innerHTML = '<span>Ready - Start practicing!</span>';
             enableControls();
         }
 
@@ -848,11 +730,8 @@
             document.getElementById('playBtn').disabled = false;
             document.getElementById('recordBtn').disabled = false;
             document.getElementById('recordText').textContent = 'Start Recording';
-            document.getElementById('statusText').textContent = 'Ready to practice';
-
-            document.querySelectorAll('.preset-btn').forEach(btn => {
-                btn.disabled = false;
-            });
+            document.getElementById('statusText').textContent = 'Ready';
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.disabled = false);
         }
 
         function transliterate(arabicText) {
@@ -894,58 +773,38 @@
         window.playReference = function () {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-
                 const utterance = new SpeechSynthesisUtterance(currentSentence);
                 utterance.lang = 'ar-SA';
                 utterance.rate = 0.8;
-                utterance.pitch = 1;
-
                 const voices = window.speechSynthesis.getVoices();
                 const arabicVoice = voices.find(v => v.lang.includes('ar'));
-                if (arabicVoice) {
-                    utterance.voice = arabicVoice;
-                }
-
+                if (arabicVoice) utterance.voice = arabicVoice;
                 window.speechSynthesis.speak(utterance);
             }
         };
 
         window.toggleRecording = async function () {
-            if (!isRecording) {
-                await startRecording();
-            } else {
-                stopRecording();
-            }
+            if (!isRecording) await startRecording();
+            else stopRecording();
         };
 
         async function startRecording() {
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-                // Set up visualizer
                 microphone = audioContext.createMediaStreamSource(stream);
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 64;
                 microphone.connect(analyser);
-
-                // Set up media recorder for Whisper
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
-
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
-                };
-
+                mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
                 mediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     await processWithBackend(audioBlob);
                 };
-
                 isRecording = true;
                 mediaRecorder.start();
-
-                // Update UI
                 const btn = document.getElementById('recordBtn');
                 btn.classList.add('recording');
                 document.getElementById('recordIcon').textContent = '⏹️';
@@ -953,35 +812,19 @@
                 document.getElementById('statusDot').classList.add('recording');
                 document.getElementById('statusText').textContent = 'Listening...';
                 document.getElementById('visualizer').classList.add('active');
-
                 visualize();
-
             } catch (err) {
-                console.error('Error accessing microphone:', err);
+                console.error('Microphone error:', err);
                 alert('Could not access microphone. Please allow microphone permissions.');
             }
         }
 
         function stopRecording() {
             isRecording = false;
-
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-
-            if (microphone) {
-                microphone.disconnect();
-                microphone = null;
-            }
-
-            if (audioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
-
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            if (microphone) { microphone.disconnect(); microphone = null; }
+            if (audioContext) { audioContext.close(); audioContext = null; }
             clearInterval(visualizerInterval);
-
-            // Reset UI
             const btn = document.getElementById('recordBtn');
             btn.classList.remove('recording');
             document.getElementById('recordIcon').textContent = '🎤';
@@ -989,49 +832,34 @@
             document.getElementById('statusDot').classList.remove('recording');
             document.getElementById('statusText').textContent = 'Processing...';
             document.getElementById('visualizer').classList.remove('active');
-
-            const bars = document.querySelectorAll('.bar');
-            bars.forEach(bar => bar.style.height = '5px');
+            document.querySelectorAll('.bar').forEach(bar => bar.style.height = '5px');
         }
 
         async function processWithBackend(audioBlob) {
-            document.getElementById('statusText').textContent = 'Analyzing pronunciation...';
-
+            document.getElementById('statusText').textContent = 'Analyzing...';
             try {
-                // Convert blob to base64
                 const reader = new FileReader();
                 reader.readAsDataURL(audioBlob);
                 reader.onloadend = async () => {
                     const base64Audio = reader.result;
-
                     try {
-                        const response = await fetch('http://localhost:8000/attempt', { // Adjust URL if deployed
+                        const response = await fetch('http://localhost:8000/attempt', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                text: currentSentence,
-                                audio: base64Audio
-                            })
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text: currentSentence, audio: base64Audio })
                         });
-
-                        if (!response.ok) {
-                            throw new Error('Server error: ' + response.statusText);
-                        }
-
+                        if (!response.ok) throw new Error('Server error');
                         const result = await response.json();
                         handleRecognitionResult(result.transcript, result.score, result.feedback, result.match);
-
                     } catch (error) {
                         console.error('API Error:', error);
-                        showResult('fail', '❌', 'Connection Error', 'Could not connect to backend. Is it running?', 0, error.message);
-                        document.getElementById('statusText').textContent = 'Error connecting';
+                        showResult('fail', '❌', 'Connection Error', 'Could not connect to backend. Is it running?', 0, '');
+                        document.getElementById('statusText').textContent = 'Error';
                     }
                 };
             } catch (error) {
                 console.error('Processing error:', error);
-                showResult('fail', '❌', 'Error', 'Could not process audio.', 0, error.message);
+                showResult('fail', '❌', 'Error', 'Could not process audio.', 0, '');
             }
         }
 
@@ -1039,61 +867,50 @@
             const bars = document.querySelectorAll('.bar');
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
-
             visualizerInterval = setInterval(() => {
                 analyser.getByteFrequencyData(dataArray);
-
                 bars.forEach((bar, i) => {
                     const value = dataArray[i % bufferLength];
-                    const height = Math.max(5, (value / 255) * 50);
-                    bar.style.height = height + 'px';
+                    bar.style.height = Math.max(5, (value / 255) * 45) + 'px';
                 });
             }, 50);
         }
 
         function handleRecognitionResult(transcript, score, feedback, isMatch) {
-            // const similarity = calculateSimilarity(currentSentence, transcript);
-            // const percentage = Math.round(similarity * 100);
-
             const percentage = score;
-
             let emoji, title, message, type;
 
             if (percentage >= 90) {
                 type = 'success';
                 emoji = '🎉';
                 title = 'Perfect!';
-                message = feedback + ' ممتاز!';
+                message = 'Excellent pronunciation!';
                 createConfetti();
             } else if (percentage >= 60) {
                 type = 'partial';
                 emoji = '👍';
                 title = 'Good Try!';
-                message = feedback + ' جيد!';
+                message = 'Nice effort! Keep practicing.';
             } else {
                 type = 'fail';
                 emoji = '💪';
                 title = 'Keep Practicing!';
-                message = feedback + ' حاول مرة أخرى!';
+                message = 'Try again for better results.';
             }
 
             showResult(type, emoji, title, message, percentage, transcript);
-            document.getElementById('statusText').textContent = 'Ready to practice';
+            document.getElementById('statusText').textContent = 'Ready';
         }
-
-        // Removed local calculateSimilarity function as backend handles it
 
         function showResult(type, emoji, title, message, percentage, recognized) {
             const section = document.getElementById('resultSection');
             section.className = 'result-section ' + type;
-
             document.getElementById('emojiReaction').textContent = emoji;
             document.getElementById('scoreCircle').textContent = percentage + '%';
-            document.getElementById('scoreCircle').style.color = type === 'success' ? '#38ef7d' : type === 'partial' ? '#f7b733' : '#fc4a1a';
+            document.getElementById('scoreCircle').style.color = type === 'success' ? '#38a169' : type === 'partial' ? '#d69e2e' : '#e53e3e';
             document.getElementById('resultTitle').textContent = title;
             document.getElementById('resultMessage').textContent = message;
-            document.getElementById('recognizedText').textContent = 'Recognized: "' + recognized + '"';
-
+            document.getElementById('recognizedText').textContent = recognized ? 'You said: "' + recognized + '"' : 'No speech detected';
             section.style.display = 'block';
         }
 
@@ -1102,7 +919,7 @@
         }
 
         function createConfetti() {
-            const colors = ['#0f3443', '#34e89e', '#f7971e', '#ffd200', '#ff6b6b'];
+            const colors = ['#3182ce', '#4299e1', '#48bb78', '#ed8936', '#9f7aea'];
             for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
@@ -1111,7 +928,6 @@
                     confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                     confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
                     document.body.appendChild(confetti);
-
                     setTimeout(() => confetti.remove(), 4000);
                 }, i * 50);
             }
@@ -1119,29 +935,17 @@
 
         function shakeElement(element) {
             element.style.animation = 'shake 0.5s';
-            setTimeout(() => {
-                element.style.animation = '';
-            }, 500);
+            setTimeout(() => element.style.animation = '', 500);
         }
 
-        // Add shake animation
         const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
-            }
-        `;
+        style.textContent = `@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }`;
         document.head.appendChild(style);
 
-        // Voice Chat Functions
+        // Voice Chat
         window.toggleVoiceChat = async function () {
-            if (!isVoiceChatRecording) {
-                await startVoiceChatRecording();
-            } else {
-                stopVoiceChatRecording();
-            }
+            if (!isVoiceChatRecording) await startVoiceChatRecording();
+            else stopVoiceChatRecording();
         };
 
         async function startVoiceChatRecording() {
@@ -1149,41 +953,30 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 voiceChatMediaRecorder = new MediaRecorder(stream);
                 voiceChatChunks = [];
-
-                voiceChatMediaRecorder.ondataavailable = (event) => {
-                    voiceChatChunks.push(event.data);
-                };
-
+                voiceChatMediaRecorder.ondataavailable = (event) => voiceChatChunks.push(event.data);
                 voiceChatMediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(voiceChatChunks, { type: 'audio/wav' });
                     await sendVoiceMessage(audioBlob);
                 };
-
                 voiceChatMediaRecorder.start();
                 isVoiceChatRecording = true;
-
-                // Update UI
                 const btn = document.getElementById('voiceChatBtn');
                 btn.classList.add('recording');
                 document.getElementById('voiceChatStatus').textContent = 'Listening...';
             } catch (err) {
-                console.error('Error accessing microphone:', err);
+                console.error('Microphone error:', err);
                 alert('Could not access microphone.');
             }
         }
 
         function stopVoiceChatRecording() {
-            if (voiceChatMediaRecorder && voiceChatMediaRecorder.state !== 'inactive') {
-                voiceChatMediaRecorder.stop();
-            }
+            if (voiceChatMediaRecorder && voiceChatMediaRecorder.state !== 'inactive') voiceChatMediaRecorder.stop();
             isVoiceChatRecording = false;
-
-            // Update UI
             const btn = document.getElementById('voiceChatBtn');
             btn.classList.remove('recording');
             btn.classList.add('processing');
             btn.innerHTML = '⏳';
-            document.getElementById('voiceChatStatus').textContent = 'Thinking...';
+            document.getElementById('voiceChatStatus').textContent = 'Processing...';
         }
 
         async function sendVoiceMessage(audioBlob) {
@@ -1192,32 +985,21 @@
                 reader.readAsDataURL(audioBlob);
                 reader.onloadend = async () => {
                     const base64Audio = reader.result;
-
                     try {
                         const response = await fetch('http://localhost:8000/voice-chat', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ audio: base64Audio })
                         });
-
-                        if (!response.ok) throw new Error('Network response was not ok');
-
+                        if (!response.ok) throw new Error('Network error');
                         const result = await response.json();
-
-                        // Add User Message
                         addChatMessage(result.transcript, 'user');
-
-                        // Add AI Message
                         addChatMessage(result.response_text, 'ai');
-
-                        // Play Audio
                         playBase64Audio(result.response_audio);
-
                     } catch (error) {
                         console.error('Voice Chat Error:', error);
                         addChatMessage("Error connecting to teacher. Please check backend.", 'ai');
                     } finally {
-                        // Reset UI
                         const btn = document.getElementById('voiceChatBtn');
                         btn.classList.remove('processing');
                         btn.innerHTML = '🎙️';
@@ -1232,7 +1014,7 @@
         function addChatMessage(text, sender) {
             const container = document.getElementById('chatContainer');
             const div = document.createElement('div');
-            div.className = `chat-message ${sender}`;
+            div.className = 'chat-message ' + sender;
             div.textContent = text;
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
@@ -1243,7 +1025,6 @@
             audio.play();
         }
 
-        // Initialize
         updateDisplay();
         initSystem();
     </script>
